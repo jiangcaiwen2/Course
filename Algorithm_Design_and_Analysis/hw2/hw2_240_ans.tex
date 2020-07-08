@@ -1,0 +1,271 @@
+\documentclass{article}
+\usepackage{graphicx,fancyhdr,amsmath,amssymb,amsthm,subfig,url,hyperref}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumerate}
+% \usepackage{algorithms}
+\usepackage{extarrows}
+\usepackage{clrscode3e}
+
+%----------------------- Macros and Definitions --------------------------
+
+%%% FILL THIS OUT
+\newcommand{\studentname}{Shen Linfeng}
+\newcommand{\suid}{2018E8018461028}
+\newcommand{\exerciseset}{Homework 2}
+\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+%%% END
+
+
+
+\renewcommand{\theenumi}{\bf \Alph{enumi}}
+
+%\theoremstyle{plain}
+%\newtheorem{theorem}{Theorem}
+%\newtheorem{lemma}[theorem]{Lemma}
+
+\fancypagestyle{plain}{}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\sffamily\bfseries ShanghaiTech University}
+\fancyhead[L]{\sffamily\bfseries CS240 Algorithm Design and Analysis}
+\fancyfoot[L]{\sffamily\bfseries\studentname: shenlinfeng2018@sari.ac.cn}
+\fancyfoot[R]{\sffamily\bfseries\thepage}
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\footrulewidth}{1pt}
+
+\graphicspath{{figures/}}
+
+%-------------------------------- Title ----------------------------------
+
+\title{CS240 \exerciseset}
+\author{\studentname \qquad Student ID: \suid}
+
+%--------------------------------- Text ----------------------------------
+
+\begin{document}
+\maketitle
+
+\section*{Problem 1}
+
+\begin{enumerate}[(a)]
+\item %(a)
+Before you buy your $i$th toy, if you have exactly $j$ toy types, 
+the probability of the $i$ toy is the type you already have is $\frac{j}{n}$;
+before you buy your $i$th toy, if you have exactly $j-1$ toy types, 
+the probability of the $i$th toy is the type you have not had is $\frac{n-(j-1)}{n}=\frac{n-j+1}{n}$.
+
+So, we have 
+\begin{equation*}
+    p_{i,j}=\frac{j}{n}p_{i-1,j}+\frac{n-j+1}{n}p_{i-1,j-1}    
+\end{equation*}
+
+\item %(b)
+Suppose you only have 0 toys before the first purchase.
+Then we have some base case:
+\begin{align*}
+    p_{1,1} &= 1\\
+    p_{i,j} &= 0 \ , i>j
+\end{align*}
+
+Direct use of recursion from will result in $O(2^n)$, 
+but with saving past $p$ values we can calculate $p_{i,j}$ in $O(ij)$.
+The algorithm is shown below:
+\begin{codebox}
+\Procname{$\proc{Toy}(i,j,n)$}
+\li Initialize a $i\times j$ array $p$ with $0$, let $p[1][1]=1$
+\li \If $i > j$
+\li \Then \Return $0$
+    \End
+\li \For $a=1$ \To $i$
+\li \Do
+    \For $b=1$ \To $i$
+\li \Do $p[a][b]=\frac{b}{n}p[a-1][b]+\frac{n-b+1}{n}p[a-1][b-1]$
+\li     \If $b\geqslant j$
+\li     \Then \textbf{break}
+        \End
+    \End
+    \End
+\li \Return $p[i][j]$
+\end{codebox}
+\end{enumerate}
+\pagebreak
+
+\section*{Problem 2}
+Let $v$, $w$ be the arrays store value and weight, and $W$ is the capacity.
+\begin{codebox}
+\Procname{$\proc{Knapsack}(n,v,w,W)$}
+\li $\id{v-sum}=\sum_{i=1}^n v[i]$
+\li Initialize a $(n+1)\times (\id{v-sum}+1)$ array $\id{opt}$ with $\infty$
+(for clearly, let the index begin from $0$ here).
+\li \For $i\gets 1$ \To $n$
+\li \Do \For $j\gets 1 \To \id{v-sum}$
+\li     \Do \If $j\geqslant v[i]$
+\li         \Then
+                $\id{opt}[i][j]\gets \min\{\id{opt}[i-1][j], \id{opt}[i-1][j-v[i]]+w[i]\}$
+\li         \Else
+\li             $\id{opt}[i][j]\gets \id{opt}[i-1][j]$
+            \End                 
+        \End
+    \End
+\zi
+\li Initialize an array $c[n]$
+\li using Binary Search by the index $j$ of $\id{opt[i][j]}$ for every $i$, to find $c[i]=\max\{j|\ \id{opt}[i][j]\leqslant W\}$
+\li \Return $\max\{c[i]\}$
+\end{codebox}
+The two for loop will cost $O(n\id{v-sum})$, 
+and $n$ Binary Search will cost $O(n\log\id{v-sum})$.
+From $v_i<n$ we can know $\id{v-sum}<n^2$, 
+so this algorithm will run in $O(n^3)$.
+
+~\\
+\noindent
+$\id{opt}[i][j]$ is the min weight subset of items $1,\cdots,i$ with value $j$.
+There exist two case:
+\begin{itemize}
+    \item $\id{opt}$ does not select item $i$.\\
+        \id{opt} selects best of $\{ 1, 2,\cdots, i-1 \}$ using value limit $j$.
+    \item \id{opt} selects item $i$.\\
+        new value limit = $j-v[i]$. \\
+        \id{opt} selects best of $\{ 1, 2,\cdots , i–1 \}$ using this new value limit.
+\end{itemize}
+The rest of the analysis is similar to the original Knapsack problem, which can prove the correctness.
+
+\pagebreak
+\section*{Problem 3}
+Let's create a data structure with: $S[i].x=x_i$, $S[i].y=y_i$.
+\begin{codebox}
+\Procname{$\proc{Counting-Friends}(S, n)$}
+\li Sort $S$ in ascending order by $S[i].x$, it will cost $O(n\log n)$.
+\li \Return $\proc{Count}(S, n)$ 
+\end{codebox}
+
+\begin{codebox}
+\Procname{$\proc{Count}(S, n)$}
+\li \If $n\isequal 1$
+\li \Then \Return $0$
+    \End
+\zi
+\li $\id{mid} \gets \floor{n/2}$
+\li $\id{count}\gets 0$, $i \gets j \gets k \gets 1$
+\li $\id{S-left} \gets S[1:\id{mid}]$
+\li $\id{S-right} \gets S[\id{mid}+1:n]$
+\li $\id{left} \gets \proc{Count}(\id{S-left}, \id{mid})$
+\li $\id{right} \gets \proc{Count}(\id{S-right}, n-\id{mid})$
+\zi
+\li \While $i \leqslant \id{mid}$ \textbf{and} $j \leqslant n-\id{mid}$
+\li \Do \If $\id{S-left}[i].y>\id{S-right}[j].y$
+\li     \Then $\id{count}+=\id{mid}-i+1$
+\li         $S[k]=\id{S-right}[j]$
+\li         $j++$
+\li     \Else 
+\li         $S[k]=\id{S-left}[i]$
+\li         $i++$
+        \End
+\li     $k++$
+    \End
+\li \If $i\leqslant \id{mid}$
+\li \Then $S[k:n]=S[i:\id{mid}]$
+    \End
+\zi
+\li \Return $\id{left}+\id{right}+\id{count}$
+\end{codebox}
+This problem can be convert to: when $S$ be sorted by $S.x$, 
+then the number of Reverse Pairs is the answer. 
+So it can be solved by Merge Sort.
+
+~\\
+\noindent
+This algorithm modifies from Merge Sort, still run in $O(n\log n)$.
+
+\pagebreak
+\section*{Problem 4}
+Let array $C$ store the cards, \func{Equ} be the equivalence tester.
+\begin{codebox}
+\Procname{$\proc{Equivalent-Detection}(C,n)$}
+\li $\id{tmp} \gets C[1]$
+\li $\id{num} \gets 1$
+\li \For $i=2$ \To $n$
+\li \Do \If $\func{Equ}(\id{tmp}, C[i])$
+\li     \Then $\id{num}++$
+\li     \Else
+\li         $\id{num}--$
+\li         \If $\id{num}\isequal 0$
+\li         \Then $\id{tmp}\gets C[i]$
+\li             $\id{num}\gets 1$
+            \End
+        \End
+    \End
+\li $\id{num}\gets 0$
+\li \For $i=1$ \To $n$
+\li \Do \If $\func{Equ}(\id{tmp}, C[i])$
+\li     \Then $\id{num}++$
+        \End
+    \End
+\li \If $\id{num}> n/2$
+\li \Then \Return True
+\li \Else
+\li \Return False
+\end{codebox}
+Both two for loop run in $O(n)$, so this algorithm will run in $O(n)$.\\
+
+\noindent
+If there exist than $n/2$ cards that are all equivalent to one another, let the number of those cards be $n_1$. 
+When in the first for loop and $\id{tmp}$ equivalent to those cards, 
+assume it past $n_2$ other type cards, then we have $n_2\leqslant n-n_1<n/1$.
+So we have $n_1-n_2>0$, which mean after the first for loop end, 
+if there exist than $n/2$ cards that are all equivalent to one another
+the $tmp$ is what we want(If exist). 
+And the second for loop will check if it is true.
+
+\pagebreak
+\section*{Problem 5}
+Let $A$,$B$,$C$ be the three sequences, 
+and $m$, $n$ be the length of $A$ and $B$.
+\begin{codebox}
+\Procname{$\proc{Sequence-Merging}(A,B,C,m,n)$}
+\li Initialize a $(m+1)\times (n+1)$ bool array $T$
+\li \For $i\gets 0 \To m$
+\li \Do \For $j\gets 0 \To n$
+\li     \Do \If $i\isequal 0$ \textbf{and} $j\isequal 0$
+\li         \Then $T[i][j]=\text{True}$
+\li         \ElseIf $i\isequal 0$ \textbf{and} $B[j]\isequal C[j] $
+\li         \Then $T[i][j]=T[i][j-1]$
+\li         \ElseIf $j\isequal 0$ \textbf{and} $A[i]\isequal C[j] $
+\li         \Then $T[i][j]=T[i-1][j]$
+\li         \ElseIf $A[i]\isequal B[j]\isequal C[i+j]$
+\li         \Then $T[i][j]=T[i-1][j]\ ||\ T[i][j-1]$
+\li         \ElseIf $A[i]\isequal C[i+j]$
+\li         \Then $T[i][j]=T[i-1][j]$
+\li         \ElseIf $B[i]\isequal C[i+j]$
+\li         \Then $T[i][j]=T[i][j-1]$
+\li         \Else
+\li             $T[i][j]=\text{{False}}$
+            \End
+        \End
+    \End
+\li \Return $T[m][n]$
+\end{codebox}
+Two for loop will cost $O(mn)$, so this algorithm will run in $O(mn)$.\\
+
+\noindent
+$T[i][j]$ store the possibility of if the first $i$ of $A$ and
+the first $j$ of $B$ can compose the first $i+j$ of $C$.
+All situations are considered in the for loop, so this algorithm will run well.
+
+\pagebreak
+\section*{Problem 6}
+\begin{codebox}
+\Procname{$\proc{Polynomial Multiplication}(A, B, n)$}
+\li Initialize a $2^k$ array $C$ with $0$($k=\min\{k|\ 2^k>n,k\in \mathbb{Z}\}$).
+\li \For $i=0$ \To $2^k-1$
+\li \Do \For $p=0$ \To $n-1$
+\li     \Do $C[i] = C[i]+A[p]\cdot B[p\oplus i]$
+        \End
+    \End
+\li \Return $C$
+\end{codebox}
+
+The correctness can be proved by the definition and the fact of $p\oplus(p\oplus i)=i$.
+Unfortunately，this is a brute force, will cost $O(n^2)$.
+
+\end{document}

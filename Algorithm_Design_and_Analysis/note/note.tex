@@ -1,0 +1,153 @@
+\documentclass{article}
+\usepackage{graphicx,fancyhdr,amsmath,amssymb,amsthm,subfig,url,hyperref}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumerate}
+\usepackage{diagbox}
+
+\setlength{\parindent}{0pt}
+\def\o{\ensuremath\varnothing}
+
+\graphicspath{{figures/}}
+\begin{document}
+
+\section*{Basic}
+\textbf{Decision problem: } Answer yes/no
+
+\textbf{P: } Decision problems for which there is a poly-time algorithm.
+
+\textbf{NP: } Decision problems for which there exists a poly-time certifier.
+\begin{itemize}
+    \item Algorithm $C(s, t)$ is a certifier for problem $X$ if for every string $s$, 
+    $s\in X$ iff there exists a string $t$ such that $C(s, t) = \text{yes}$ .
+\end{itemize}
+
+\textbf{co-NP: } Complements of decision problems in NP.
+
+\textbf{PSPACE: } Decision problems solvable in polynomial \textbf{space}.
+
+\textbf{EXP: } Decision problems for which there is an exponential-time
+algorithm.
+
+\textbf{Claim: } $\text{P} \subseteq \text{NP}, \text{co-NP} \subseteq \text{EXP}$ \qquad
+$ \text{NP}\subseteq \text{PSPACE} \subseteq \text{EXP} $
+
+~\\
+\textbf{Reduction: }
+Problem $X$ \textbf{polynomial-time reduces to} problem $Y$ if arbitrary instances of problem $X$ can be solved using:
+\begin{itemize}
+    \item Polynomial number of standard computational steps.
+    \item Polynomial number of calls to oracle(A black box that solves instances of $Y$ in a single step) that solves problem $Y$.
+\end{itemize}
+\textbf{Notation: } $X \leq_P Y$.
+
+\noindent
+\textbf{Common approach: }
+polynomial transformation
+\begin{itemize}
+    \item Given any input $x$ to $X$, 
+    \textbf{construct} an input $y$ in poly-time such that $x$
+    is a yes instance of $X$ iff $y$ is a yes instance of $Y$.
+\end{itemize}
+% other
+% \begin{itemize}
+%     \item \textbf{Design algorithms:} If $X \leq_P Y$ and $Y$ can be solved in polynomial-time,
+%     then $X$ can also be solved in polynomial time.
+%     \item \textbf{Establish intractability:} If $X \leq_P Y$ and $X$ cannot be solved in
+%     polynomial-time, then $Y$ cannot be solved in polynomial time.
+%     \item \textbf{Establish equivalence:} If $X \leq_P Y$ and $Y \leq_P X$, 
+%     we use notation $X \equiv_P Y$.
+%     In this case, $X$ can be solved in polynomial time iff $Y$ can be.
+% \end{itemize}
+
+\section*{NP-Completeness}
+\textbf{NP-complete. } 
+A problem $Y$ in NP with the property that for every
+problem $X$ in NP, $X \leq_P Y$.
+
+Recipe to establish NP-completeness of problem $Y$.
+\begin{enumerate}
+    \item Show that $Y$ is in NP.
+    \item Choose an NP-complete problem $X$.
+    \item Prove that $X \leq_P Y$
+\end{enumerate}
+
+NPC problem
+\begin{itemize}
+    \item \textbf{SAT: } Given CNF formula $\Phi$, does it have a satisfying truth assignment.
+    \item \textbf{3-SAT: } SAT where each clause contains exactly $3$ literals.
+    \item \textbf{INDEPENDENT SET:} Given a graph $G = (V, E)$ and an integer $k$, 
+    is there a subset of vertices $S \subseteq V$ such that $|S| \geq k$, 
+    and for each edge at most one of its endpoints is in $S$?
+    \item \textbf{VERTEX COVER:} Given a graph $G = (V, E)$ and an integer $k$,
+    is there a subset of vertices $S \subseteq V$ such that $|S| \leq k$, 
+    and for each edge, at least one of its endpoints is in $S$?
+    \item \textbf{SET COVER: } Given a set $U$ of elements, 
+    a collection $S_1 , S_2 , \cdots , S_m$ of subsets of $U$, 
+    and an integer $k$, does there exist a collection of $\leq k$ of
+    these sets whose union is equal to $U$?
+    \item \textbf{DIR-HAM-CYCLE: } Given a digraph $G = (V, E)$, 
+    does there exists a simple directed cycle $\Gamma$ that contains every node in $V$?
+    \item \textbf{HAM-CYCLE: } Given an undirected graph $G = (V, E)$, 
+    does there exist a simple cycle $C$ that visits every node.
+    \item \textbf{TSP: } Given a set of $n$ cities and a pairwise distance function $d(u, v)$, 
+    is there a tour of length $\leq D$.
+    \item \textbf{GRAPH 3-COLOR: } Given an \textbf{undirected} graph $G$ does there exist a way to color the nodes red, green, and blue so that no adjacent nodes have the same color.
+    \item \textbf{3D-MATCHING: } Given disjoint sets $X$, $Y$, and $Z$, 
+    each of size $n$ and a set $T \subseteq X \times Y \times Z$ of triples, 
+    does there exist a set of $n$ triples in $T$ 
+    such that each element of $X \cup Y \cup Z$ is in exactly one of these triples.
+    \item \textbf{SUBSET-SUM: } Given natural numbers $w_1 , \cdots, w_n$ and an integer $W$, 
+    is there a subset that adds up to exactly $W$.
+    \item \textbf{SCHEDULING: } Given a set of $n$ jobs with processing time $t_i$ , 
+    release time $r_i$, and deadline $d_i$, 
+    is it possible to schedule all jobs on a single machine 
+    such that job $i$ is processed with a contiguous slot of $t_i$ time units 
+    in the interval $[r_i , d_i ]$
+\end{itemize}
+
+\section*{PSPACE-Complete}
+Problem $Y$ is PSPACE-complete if (i) $Y$ is in PSPACE
+and (ii) for every problem $X$ in PSPACE, $X \leq_P Y$. 
+
+PSPACE-Complete problems
+\begin{itemize}
+    \item \textbf{QSAT(Quantified 3-SAT)} Let $\Phi(x_1 , \cdots, x_n )$ be a Boolean CNF formula.
+    Is the following propositional formula true:
+    \begin{equation*}
+        \exists x_1 ~\forall x_2 ~\exists x_3 ~\forall x_4\cdots \forall x_{n-1} ~\exists x_n~\Phi(x_1,\cdots, x_n) \qquad n \text{ is odd}
+    \end{equation*}
+    \item Competitive Facility Location
+    \begin{itemize}
+        \item \textbf{Input}. Graph with positive node weights, and target number $B$.
+        \item \textbf{Game}. Two competing players alternate in selecting nodes. 
+        Not allowed to select a node if any of its neighbors has been selected.
+        \item \textbf{Competitive facility location}. Can second player guarantee at least $B$
+        units of profit?
+    \end{itemize}
+\end{itemize}
+
+% \section*{Approximation Algorithms}
+
+
+\section*{Randomized Algorithms}
+\begin{itemize}
+    \item $(1 - 1/x) x \leq 1/e$\qquad $\ln(n+1)<\sum\limits_{i=1}^n 1/n <1+\ln n $
+    \item $(1 - 1/n)^{n}$ converges monotonically from $1/4$ up to $1/e$($n$ increases from $2$)
+    \item $(1 - 1/n)^{n-1}$ converges monotonically from $1/2$ down to $1/e$
+    \item \textbf{Union bound: } Given events $E_1, \cdots, E_n$, 
+    $\text{Pr}[\bigcup\limits_{i=1}^n E_i]\leq \sum\limits_{i=1}^n \text{Pr}[E_i]$
+    \item $E[X]=\sum\limits_{j=0}^\infty \text{Pr}[X=j]$
+    \item Given two random variables $X$ and $Y$ (not necessarily independent) defined over the same probability space, $E[X + Y] = E[X] + E[Y]$.
+\end{itemize}
+
+\textbf{Monte Carlo algorithm: } Guaranteed running time, likely to find correct answer.
+\begin{itemize}
+    \item Contraction algorithm for global min cut
+\end{itemize} 
+\textbf{Las Vegas algorithm: } Guaranteed to find correct answer, likely to run in certain time.
+\begin{itemize}
+    \item Johnson's MAX-3SAT algorithm
+    \item Randomized quicksort
+\end{itemize}
+
+\end{document}
