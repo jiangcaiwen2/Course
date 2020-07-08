@@ -1,0 +1,112 @@
+\documentclass[12pt]{article}%
+\usepackage{amsfonts}
+\usepackage{fancyhdr}
+\usepackage{comment}
+\usepackage[a4paper, top=2.5cm, bottom=2.5cm, left=2.2cm, right=2.2cm]%
+{geometry}
+\usepackage{times}
+\usepackage{amsmath}
+\usepackage{changepage}
+\usepackage{amssymb}
+\usepackage{graphicx}%
+\setcounter{MaxMatrixCols}{30}
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}{Axiom}
+\newtheorem{case}[theorem]{Case}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{solution}[theorem]{Solution}
+\newtheorem{summary}[theorem]{Summary}
+\newenvironment{proof}[1][Proof]{\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+
+\begin{document}
+
+\title{CS280 Fall 2019 Assignment 1 \\ Part A}
+\author{Basic Neural Networks}
+\date{Due on October 10, 2019, 23:59 UTC+8}
+\maketitle
+
+\paragraph{Name:}
+
+\paragraph{Student ID:}
+
+\newpage
+
+
+\subsubsection*{1. Hessian in Logistic Regression (10 points)}
+Let $\sigma(a)=\frac{1}{1+e^{-a}}$ be an activation function, the loss function of LR is  \[f(\mathbf{w})=-\sum_{i=1}^{n}[y_i\log(\mu_i)+(1-y_i)\log(1-\mu_i)],\] where $\mu_i=\sigma(\mathbf{w}^\intercal\mathbf{x}_i)$. 
+\begin{itemize}
+	\item Show that the Hessian of $f$ can be written as $H=X^\intercal S X$, where $S=diag(\mu_1(1-\mu_1),\cdots, \mu_n(1-\mu_n))$ and $X = [X_1,\cdots, X_n]^\intercal$
+\end{itemize}
+
+
+\newpage
+
+
+\subsubsection*{2. Linear Regression (5 points)}
+Linear regression has the form \[f(x)=E[y|x] = b + \mathbf{w}^\intercal \mathbf{x}.\]  
+\begin{itemize}
+	\item It is possible to solve for $\mathbf{w}$ and $b$ separately. Show that 
+	\[b = \frac{1}{n}\sum_{i=1}^n y_i -\frac{1}{n}\sum_{i=1}^n \mathbf{x}_i^\intercal \mathbf{w} = \bar{y} - \bar{\mathbf{x}}^\intercal \mathbf{w}\]
+\end{itemize}
+
+
+\newpage
+
+
+%\subsubsection*{3. Gaussian Distributions (10 points)}
+%Let $X\sim N(0,1)$ and $Y=WX$, where $p(W=-1)=p(W=1)=0.5$. It is clear that $X$ and $Y$ are not independent since $Y$ is a function of $X$. 
+%\begin{itemize}
+%	\item Show $Y\sim N(0,1)$
+%	\item Show $cov[X,Y]=0$. hint: $cov[X,Y]=E[XY]-E[X]E[Y]$ and $E[XY]=E[E[XY|W]]$
+%\end{itemize}
+%Therefore, $X$ and $Y$ are uncorrelated and Gaussian, but they are dependent. Why?
+\subsubsection*{3. Gradient descent for fitting GMM (15 points)}
+Consider the Gaussian mixture model
+\[p(\mathbf{x}|\theta)=\sum_k \pi_{k=1}^K \mathcal{N}(\mathbf{x}|\mu_k,\Sigma_k)\]
+Define the log likelihood as
+\[ l(\theta) = \sum_{n=1}^N \log p(\mathbf{x}_n|\theta)
+\]
+Denote the posterior responsibility that cluster $k$ has for datapoint $n$ as follows:
+\[
+r_{nk}:=p(z_n=k|\mathbf{x}_n,\theta) = \frac{\pi_k\mathcal{N}(\mathbf{x}_n|\mu_k,\Sigma_k)}{\sum_{k'}\pi_{k'}\mathcal{N}(\mathbf{x}_n|\mu_{k'},\Sigma_k{k'})}
+\]
+
+\begin{itemize}
+	
+	\item Show that the gradient of the log-likelihood wrt $\mu_k$ is
+	\[ \frac{d}{d\mu_k}l(\theta) = \sum_n r_{nk}\Sigma_k^{-1}(\mathbf{x}_n-\mu_k)
+	\]
+    \item Derive the gradient of the log-likelihood wrt $\pi_k$ without considering any constraint on $\pi_k$. (bonus: with constraint $\sum_k\pi_k=1$.)
+    \item Derive the gradient of the log-likelihood wrt $\Sigma_k$ without considering any constraint on $\Sigma_k$. (bonus: with constraint $\Sigma_k$ be a symmetric positive definite matrix.) 
+	
+\end{itemize}
+
+
+\newpage
+
+\nocite{*} 
+\bibliographystyle{apalike}
+\bibliography{reference.bib}
+
+
+\end{document}

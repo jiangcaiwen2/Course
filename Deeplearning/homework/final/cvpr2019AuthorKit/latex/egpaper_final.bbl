@@ -1,0 +1,21 @@
+\begin{thebibliography}{1}\itemsep=-1pt
+
+\bibitem{griffinHolubPerona}
+G.~Griffin, A.~Holub, and P.~Perona.
+\newblock Caltech-256 object category dataset.
+\newblock Technical Report 7694, California Institute of Technology, 2007.
+
+\bibitem{lazebnik2006beyond}
+S.~Lazebnik, C.~Schmid, and J.~Ponce.
+\newblock Beyond bags of features: Spatial pyramid matching for recognizing
+  natural scene categories.
+\newblock In {\em Computer vision and pattern recognition, 2006 IEEE computer
+  society conference on}, volume~2, pages 2169--2178. IEEE, 2006.
+
+\bibitem{YANG2007Evaluating}
+J.~YANG.
+\newblock Evaluating bag-of-visual-words representations in scene
+  classification.
+\newblock {\em Proc Mir}, 2007.
+
+\end{thebibliography}
